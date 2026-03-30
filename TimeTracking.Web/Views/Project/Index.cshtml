@@ -1,5 +1,4 @@
 ﻿@model TimeTracking.Core.Models.PagedResult<TimeTracking.Core.Models.Project>
-@*@using MvcPaging*@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -33,49 +32,3 @@
 <div class="pager">
     @Html.Pager(Model.PageSize, Model.PageNumber, Model.TotalRecords, "Index", new { controller = "Project" }, "Default")
 </div>
-<div class="col-xs-12">
-    
-    @*<div class="paging-new" style="margin-top: 20px;">
-        @Html.NewPager(Model.PageSize, Model.PageNumber, Model.TotalRecords)
-
-    </div>*@
-</div>
-
-@*@model IEnumerable<TimeTracking.Web.Models.ProjectViewModel>
-
-    @{
-        Layout = "~/Views/Shared/_Layout.cshtml";
-        ViewBag.Title = "Employees";
-    }
-
-    <link href="~/Content/css/employee.css" rel="stylesheet" />
-    <script src="~/Scripts/employee.js"></script>
-
-    <h2>Employees</h2>
-
-    <table class="table-project">
-
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Project Code</th>
-                <th>Name</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            @foreach (var proj in Model)
-            {
-                <tr>
-                    <td>@proj.Id</td>
-                    <td>@proj.ProjectCode</td>
-                    <td>@proj.Name</td>
-                    <td>@(proj.IsActive ? "Active" : "Inactive")</td>
-                </tr>
-            }
-
-        </tbody>
-
-    </table>*@

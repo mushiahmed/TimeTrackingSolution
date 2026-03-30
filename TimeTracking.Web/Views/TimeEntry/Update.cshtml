@@ -58,7 +58,6 @@ else
 
 @section scripts {
     <script src="~/Scripts/parsley.min.js"></script>
-    @*<script src="~/Scripts/layout.js"></script>*@
     <script>
         (function () {
             var $form = $('#timeEntryForm');
@@ -85,7 +84,6 @@ else
                     },
                     success: function (res) {
                         if (res && res.success) {
-                            // redirect to Index preserving current page
                             window.location = '@Url.Action("Index", "TimeEntry")' + '?page=' + encodeURIComponent(page);
                             return;
                         }
@@ -95,7 +93,6 @@ else
                             return;
                         }
 
-                        // fallback
                         window.location = '@Url.Action("Index", "TimeEntry")' + '?page=' + encodeURIComponent(page);
                     },
                     error: function (xhr) {
@@ -103,7 +100,7 @@ else
                         try {
                             var json = JSON.parse(xhr.responseText);
                             if (json && json.error) msg = json.error;
-                        } catch (e) { /* ignore parse error */ }
+                        } catch (e) {}
                         $('#formError').text(msg).show();
 
                     }

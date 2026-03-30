@@ -281,7 +281,6 @@ namespace TimeTracking.Web.Controllers
             {
                 var apiUrl = System.Configuration.ConfigurationManager.AppSettings["ApiBaseUrl"] + $"timeentries/{id}";
 
-                //throw new Exception("Error in del");
                 using (var http = new HttpClient())
                 {
                     var resp = await http.DeleteAsync(apiUrl).ConfigureAwait(false);

@@ -245,24 +245,7 @@ namespace TimeTracking.Data.Repository
                     ) AS Result
                     WHERE RowNum BETWEEN @StartRow AND @EndRow";
 
-                //string sql = @"
-                //        SELECT 
-                //            p.id ProjectId,
-                //            p.name ProjectName,
-                //            DATEPART(YEAR, t.entrydate) Year,
-                //            DATEPART(WEEK, t.entrydate) WeekNumber,
-                //            SUM(t.hours) TotalHours
-                //        FROM TimeEntries t
-                //        INNER JOIN Projects p ON p.id = t.projectid
-                //        WHERE (@fromDate IS NULL OR t.entrydate >= @fromDate)
-                //                      AND (@toDate IS NULL OR t.entrydate <= @toDate)
-                //        GROUP BY 
-                //            p.id,
-                //            p.name,
-                //            DATEPART(YEAR, t.entrydate),
-                //            DATEPART(WEEK, t.entrydate)
-                //        ORDER BY p.name";
-
+                
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@StartRow", startRow);
                 cmd.Parameters.AddWithValue("@EndRow", endRow);
@@ -293,10 +276,6 @@ namespace TimeTracking.Data.Repository
             result.FromDate = fromDate ?? DateTime.Today;
             result.ToDate = toDate ?? DateTime.Today;
             result.TotalRecords = GetTotalProjectWeeklyCount(fromDate, toDate);
-
-            //result.Items = list;
-            //result.PageNumber = pageNumber;
-            //result.PageSize = pageSize;
 
             return result;
         }
