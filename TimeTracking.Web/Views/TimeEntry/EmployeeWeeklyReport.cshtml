@@ -1,0 +1,87 @@
+﻿@model TimeTracking.Core.Models.PagedResult<TimeTracking.Core.Models.EmployeeWeeklySummary>
+@using MvcPaging
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Employee Weekly Summery";
+}
+
+<link href="~/Content/css/employee.css" rel="stylesheet" />
+<script src="~/Scripts/employee.js"></script>
+
+<h2 class="page-title">Employee Weekly Summery</h2>
+@using (Html.BeginForm("EmployeeWeeklyreport", "TimeEntry", FormMethod.Get))
+{
+    <div class="row" style="margin-bottom:12px;">
+        
+        <div class="col-md-3">
+            <label for="startDate">From Date</label>
+            @Html.TextBox("fromDate", Model.FromDate.Value.ToString("yyyy-MM-dd") ?? DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", type = "date", id = "fromDate" })
+        </div>
+        <div class="col-md-3">
+            <label for="endDate">To Date</label>
+            @Html.TextBox("toDate", Model.ToDate.Value.ToString("yyyy-MM-dd") ?? DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", type = "date", id = "toDate" })
+        </div>
+        <div class="col-md-2" style="padding-top:24px;">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a href="@Url.Action("EmployeeWeeklyreport", "TimeEntry")" class="btn btn-default">Reset</a>
+        </div>
+    </div>
+}
+
+<div id="formError" class="alert alert-danger" style="display:none;"></div>
+
+<table class="table table-employee">
+    <tr>
+        <th>Employee</th>
+        <th>Year</th>
+        <th>Week</th>
+        <th>Total Hours</th>
+        <th>Overtime</th>
+    </tr>
+
+    @foreach (var t in Model.Items)
+    {
+        <tr>
+            <td>@t.EmployeeName</td>
+            <td>@t.Year</td>
+            <td>@t.WeekNumber</td>
+            <td>@t.TotalHours</td>
+            <td>
+                @if (t.IsOvertime)
+                {
+                    <span class="label label-danger">Yes</span>
+                }
+            </td>
+        </tr>
+    }
+
+</table>
+
+<div class="col-xs-12">
+    <div class="paging-new" style="margin-top: 20px;">
+        <div class="pager">
+            @Html.Pager(Model?.PageSize ?? 10, Model?.PageNumber ?? 1, Model?.TotalRecords ?? 0, "EmployeeWeeklyreport", new { fromDate = Model.FromDate?.ToString("yyyy-MM-dd"), toDate = Model.ToDate?.ToString("yyyy-MM-dd") }, "Default")
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    
+    <script type="text/javascript">
+        
+        $(document).ready(function () {
+            var isError = @(ViewBag.Error != null && !string.IsNullOrWhiteSpace(ViewBag.Error.ToString()) ? "true" : "false");
+
+            if (isError) {
+                var msg = "@ViewBag.Error";
+                $('#formError').text(msg).show();
+            }
+        });
+
+
+
+
+    </script>
+
+}

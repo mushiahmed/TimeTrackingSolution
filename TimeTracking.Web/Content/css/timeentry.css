@@ -1,0 +1,40 @@
+﻿.page-title {
+    color: #1f4e79;
+    margin-bottom: 20px;
+}
+
+.form-container {
+    width: 400px;
+    background: #f2f2f2;
+    padding: 20px;
+    border-radius: 6px;
+}
+
+    .form-container label {
+        display: block;
+        margin-top: 12px;
+        color: #1f4e79;
+    }
+
+.form-control {
+    width: 100%;
+    padding: 6px;
+    margin-top: 4px;
+}
+
+.btn-group {
+    margin-top: 20px;
+}
+
+    .btn-group button {
+        background: #1f4e79;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        margin-right: 5px;
+        border-radius: 4px;
+    }
+
+        .btn-group button:hover {
+            background: #2f6fab;
+        }

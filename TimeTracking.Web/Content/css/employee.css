@@ -1,0 +1,24 @@
+﻿h2 {
+    color: #2b6cb0 !important;
+    margin-bottom: 20px !important;
+}
+
+.table-employee {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .table-employee th {
+        background-color: #e2e8f0;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .table-employee td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .table-employee tr:hover {
+        background-color: #f1f5f9;
+    }

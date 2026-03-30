@@ -1,0 +1,131 @@
+﻿@model TimeTracking.Web.Models.TimeEntryViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Add Time Entry";
+}
+<link href="~/Content/css/timeentry-form.css" rel="stylesheet" />
+<link href="~/Content/css/employee.css" rel="stylesheet" />
+<link href="~/Content/parsley.css" rel="stylesheet" />
+<h2 class="page-title">Add Time Entry</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div id="formError" class="alert alert-danger">@ViewBag.Error</div>
+}
+else
+{
+    <div id="formError" class="alert alert-danger" style="display:none"></div>
+}
+
+<div class="col-xs-12 main-div">
+
+    <div class="form-div">
+        @using (Html.BeginForm("Create", "TimeEntry", FormMethod.Post, new { id = "timeEntryForm", @class = "timeentry-form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <label>Employee</label>
+            @Html.DropDownListFor(m => m.EmployeeId, Model.Employees, "Select Employee", new { @class = "form-control", id = "employeeId", @data_parsley_required = "true", @data_parsley_required_message = "Employee is required" })
+
+            <label>Project</label>
+            @Html.DropDownListFor(m => m.ProjectId, Model.Projects, "Select Project", new { @class = "form-control", id = "projectId", @data_parsley_required = "true", @data_parsley_required_message = "Project is required" })
+
+            <label>Date</label>
+            @Html.TextBoxFor(m => m.EntryDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", id = "entryDate", @data_parsley_required = "true", @data_parsley_required_message = "Date is required" })
+
+            <label>Hours</label>
+            @Html.TextBoxFor(m => m.Hours, new { @class = "form-control", type = "number", step = "0.25", id = "hours", @data_parsley_required = "true", @data_parsley_required_message = "Hours are required", @min = "1", @max = "24" })
+
+            <label>Notes</label>
+            @Html.TextBoxFor(m => m.Notes, new { @class = "form-control", id = "notes" })
+
+            <label>Source</label>
+            @Html.TextBoxFor(m => m.Source, new { @class = "form-control", id = "source" })
+
+            <div class="btn-group btn-div">
+                <button type="submit" id="btnSave" class="btn btn-primary">Save</button>
+                <a href="@Url.Action("Index","TimeEntry")" class="btn btn-default btn-cancel-left-margin">Cancel</a>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/parsley.min.js"></script>
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>*@
+    <script>
+        (function () {
+            var $form = $('#timeEntryForm');
+            $form.parsley();
+
+            $form.on('submit', function (e) {
+                e.preventDefault();
+                if (!$form.parsley().isValid()) {
+                    return;
+                }
+
+                var url = $form.attr('action');
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: $form.serialize(),
+                    success: function (res) {
+                        if (res && res.success) {
+                            window.location = '@Url.Action("Index", "TimeEntry")';
+                            return;
+                        }
+
+                        if (res && res.error) {
+                            $('#formError').text(res.error).show();
+                            return;
+                        }
+
+                        window.location = '@Url.Action("Index", "TimeEntry")';
+                    },
+                    error: function (xhr) {
+                        var msg = 'An unexpected error occurred.';
+                        try {x
+                            var json = JSON.parse(xhr.responseText);
+                            if (json && json.error) {
+                                msg = json.error;
+                            }
+                        } catch (e) {}
+                        $('#formError').text(msg).show();
+                    }
+                });
+            });
+        })();
+    </script>
+}
+
+@*<div class="form-container">
+
+        <input type="hidden" id="entryId" />
+
+        <label>Employee</label>
+        @Html.DropDownListFor(m => m.EmployeeId, Model.Employees, "Select Employee", new { @class = "form-control", id = "employeeId" })
+
+        <label>Project</label>
+        @Html.DropDownListFor(m => m.ProjectId, Model.Projects, "Select Project", new { @class = "form-control", id = "projectId" })
+
+        <label>Date</label>
+        <input type="date" id="entryDate" class="form-control" />
+
+        <label>Hours</label>
+        <input type="number" id="hours" class="form-control" />
+
+        <label>Notes</label>
+        <input type="text" id="notes" class="form-control" />
+        <label>Source</label>
+        <input type="text" id="source" class="form-control" />
+
+        <div class="btn-group">
+
+            <button onclick="createEntry()">Create</button>
+            <button onclick="updateEntry()">Update</button>
+            <button onclick="deleteEntry()">Delete</button>
+
+        </div>
+
+    </div>*@

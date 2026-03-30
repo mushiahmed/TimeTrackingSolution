@@ -1,0 +1,38 @@
+﻿@model IEnumerable<TimeTracking.Web.Models.EmployeeViewModel>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Employees";
+}
+
+<link href="~/Content/css/employee.css" rel="stylesheet" />
+<script src="~/Scripts/employee.js"></script>
+
+<h2>Employees</h2>
+
+<table class="table-employee">
+
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Employee Code</th>
+            <th>Full Name</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var emp in Model)
+        {
+            <tr>
+                <td>@emp.Id</td>
+                <td>@emp.EmployeeCode</td>
+                <td>@emp.FullName</td>
+                <td>@(emp.IsActive ? "Active" : "Inactive")</td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>

@@ -1,0 +1,114 @@
+﻿@model TimeTracking.Web.Models.TimeEntryViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Update Time Entry";
+}
+
+<link href="~/Content/css/timeentry-form.css" rel="stylesheet" />
+<script src="~/Scripts/employee.js"></script>
+<link href="~/Content/parsley.css" rel="stylesheet" />
+
+<h2 class="page-title">Update Time Entry</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div id="formError" class="alert alert-danger">@ViewBag.Error</div>
+}
+else
+{
+    <div id="formError" class="alert alert-danger" style="display:none"></div>
+}
+
+<div class="col-xs-12 main-div">
+
+    <div class="form-div">
+        @using (Html.BeginForm("Update", "TimeEntry", FormMethod.Post, new { id = "timeEntryForm", @class = "timeentry-form" }))
+        {
+            
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Id)
+            <input type="hidden" id="page" name="page" value="@(Request["page"] ?? "1")" />
+
+            <label>Employee</label>
+            @Html.DropDownListFor(m => m.EmployeeId, Model.Employees, "Select Employee", new { @class = "form-control", id = "employeeId", @data_parsley_required = "true", @data_parsley_required_message = "Employee is required" })
+
+            <label>Project</label>
+            @Html.DropDownListFor(m => m.ProjectId, Model.Projects, "Select Project", new { @class = "form-control", id = "projectId", @data_parsley_required = "true", @data_parsley_required_message = "Project is required" })
+
+            <label>Date</label>
+            @Html.TextBoxFor(m => m.EntryDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", id = "entryDate", @data_parsley_required = "true", @data_parsley_required_message = "Date is required" })
+
+            <label>Hours</label>
+            @Html.TextBoxFor(m => m.Hours, new { @class = "form-control", type = "number", step = "0.25", id = "hours", @data_parsley_required = "true", @data_parsley_required_message = "Hours are required", @min = "1", @max = "24" })
+
+            <label>Notes</label>
+            @Html.TextBoxFor(m => m.Notes, new { @class = "form-control", id = "notes" })
+
+            <label>Source</label>
+            @Html.TextBoxFor(m => m.Source, new { @class = "form-control", id = "source" })
+
+            <div class="btn-group" style="margin-top:12px;">
+                <button type="submit" id="btnSave" class="btn btn-primary">Update</button>
+                <a href="@Url.Action("Index","TimeEntry", new { page = Request["page"] })" class="btn btn-default" style="margin-left:8px;">Cancel</a>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/parsley.min.js"></script>
+    @*<script src="~/Scripts/layout.js"></script>*@
+    <script>
+        (function () {
+            var $form = $('#timeEntryForm');
+            $form.parsley();
+
+            $form.on('submit', function (e) {
+                e.preventDefault();
+                $('#formError').hide().text('');
+
+                if (!$form.parsley().isValid()) {
+                    return;
+                }
+
+                var url = $form.attr('action');
+                var page = $('#page').val() || '1';
+
+                showOverlay('Saving...');
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: $form.serialize(),
+                    complete: function () {
+                        hideOverlay();
+                    },
+                    success: function (res) {
+                        if (res && res.success) {
+                            // redirect to Index preserving current page
+                            window.location = '@Url.Action("Index", "TimeEntry")' + '?page=' + encodeURIComponent(page);
+                            return;
+                        }
+
+                        if (res && res.error) {
+                            $('#formError').text(res.error).show();
+                            return;
+                        }
+
+                        // fallback
+                        window.location = '@Url.Action("Index", "TimeEntry")' + '?page=' + encodeURIComponent(page);
+                    },
+                    error: function (xhr) {
+                        var msg = 'An unexpected error occurred.';
+                        try {
+                            var json = JSON.parse(xhr.responseText);
+                            if (json && json.error) msg = json.error;
+                        } catch (e) { /* ignore parse error */ }
+                        $('#formError').text(msg).show();
+
+                    }
+                });
+            });
+        })();
+    </script>
+}
