@@ -64,11 +64,14 @@ else
                 }
 
                 var url = $form.attr('action');
-
+                showOverlay('Saving...');
                 $.ajax({
                     url: url,
                     type: 'POST',
                     data: $form.serialize(),
+                    complete: function () {
+                        hideOverlay();
+                    },
                     success: function (res) {
                         if (res && res.success) {
                             window.location = '@Url.Action("Index", "TimeEntry")';
